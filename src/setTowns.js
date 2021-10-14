@@ -11,4 +11,4 @@ const setTowns = n => {
     return xys;
 }
 // console.log(setTowns(3));
-export default setTowns;
+module.exports = setTowns;

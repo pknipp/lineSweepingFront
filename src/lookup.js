@@ -10,4 +10,4 @@ const lookup = xys => {
 };
 
 // console.log(lookup([[1, 2], [3, 4], [5, 3]]));
-export default lookup;
+module.exports = lookup;
