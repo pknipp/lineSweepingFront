@@ -1,4 +1,4 @@
-from lookup import lookup
+import lookup from './lookup';
 from find_one import find_one
 from set_towns import set_towns
 
