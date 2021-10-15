@@ -1,6 +1,6 @@
 const facToItin = require('./facToItin');
 
-const findOne = (iter, distanceMin, memo, xys, interTownDistances) => {
+const findOne = (n, iter, distanceMin, memo, xys, interTownDistances) => {
   // Below are descriptions of the lines.  All positions are expressed in half-feet, relative to an origin at the middle of the baseline.  All lines point in positive direction (either x or y).
   //   0: left-outside alley
   //   1: left-inside alley
@@ -23,7 +23,7 @@ const findOne = (iter, distanceMin, memo, xys, interTownDistances) => {
         [[ dx1,  0],[ dx1,dy2]],
         [[ dx2,  0],[ dx2,dy2]]];
 
-  const n = xy.length;
+  // const n = xy.length;
   // base2_max = 2 ** n;
   let facPerm = 1;
   for (let i = 1; i <= n; i++) facPerm *= i;
@@ -32,7 +32,9 @@ const findOne = (iter, distanceMin, memo, xys, interTownDistances) => {
     // base2 = 0
     // iter += 1
   // loop over all permutations (ie, all possible itineraries)
+  // console.log("before findOne while, iter/facPerm = ", iter, facPerm)
   while (iter < facPerm) {
+    // console.log("top of findOne while.")
     // while base2 < base2_max
 
 // for ntot in range(0,2**(len(xy)-1)):
@@ -70,6 +72,8 @@ const findOne = (iter, distanceMin, memo, xys, interTownDistances) => {
       const index = itin[i];
       areSame = areSame && memo && memo[i] && memo[i][0] === index;
         // ... if existing element in memo cannot be used, then reassign it
+      // console.log("indexLast = ", indexLast);
+      // console.log(interTownDistances);
       if (!areSame) memo[i] = [index, distanceTot + interTownDistances[indexLast][index]];
       distanceTot = memo[i][1];
       indexLast = index;
@@ -78,6 +82,7 @@ const findOne = (iter, distanceMin, memo, xys, interTownDistances) => {
     distanceTot += interTownDistances[indexLast][n];
     itin.unshift(n);
     itin.push(n);
+    // console.log(iter, distanceTot);
     if (distanceTot < distanceMin) {
       distanceMin = distanceTot;
       return {iter, itin, distanceMin, finished: false};
