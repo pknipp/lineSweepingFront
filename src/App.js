@@ -6,7 +6,7 @@ import lookup from './lookup';
 
 const App = () => {
     const [message, setMessage] = useState('initial message');
-    const [n, setN] = useState(8);
+    const [n, setN] = useState(3);
     const [iter, setIter] = useState(-1);
     const [distanceMin, setDistanceMin] = useState(10 ** 10);
     const [memo, setMemo] = useState([]);
@@ -14,6 +14,7 @@ const App = () => {
     const [interTownDistances, setInterTownDistances] = useState(lookup(xys));
     const [finished, setFinished] = useState(false);
     const [results, setResults] = useState([[iter, distanceMin]]);
+    const [data, setData] = useState({});
     const [count, setCount] = useState(0);
 
     // useEffect(() => {
@@ -42,23 +43,42 @@ const App = () => {
                 // console.log("params = ", params)
                 let backURL = `http://127.0.0.1:5000/${params}`;
                 // let backURL = "https://line-sweeping-back.herokuapp.com";
-                const response = await fetch(backURL);
-                let data = await response.json();
-                if (!data.finished) {
-                    setIter(data.iter);
-                    setDistanceMin(data.distance_min);
-                    setMemo(data.memo);
-                    let newResults = JSON.parse(JSON.stringify(results));
-                    newResults.push([data.iter, data.distance_min]);
-                    setResults(newResults);
-                    // setResults([...results, [data.iter, data.distance_min]]);
-                    console.log(data.iter, data.distance_min);
-                }
-                setFinished(data.finished);
+                if (!finished) {
+                    const response = await fetch(backURL);
+                    setData(await response.json());
+                };
+                // if (!data.finished) {
+                //     setIter(data.iter);
+                //     setDistanceMin(data.distance_min);
+                //     setMemo(data.memo);
+                //     let newResults = JSON.parse(JSON.stringify(results));
+                //     newResults.push([data.iter, data.distance_min]);
+                //     setResults(newResults);
+                //     // setResults([...results, [data.iter, data.distance_min]]);
+                //     console.log(data.iter, data.distance_min);
+                // }
+                // setFinished(data.finished);
                 // setMessage(data.message);
             })()
         }
     }, [iter]);
+
+    useEffect(() => {
+        let newFinished = data.finished;
+        if (!newFinished) {
+            setIter(data.iter);
+            setDistanceMin(data.distance_min);
+            setMemo(data.memo);
+            let newResults = JSON.parse(JSON.stringify(results));
+            newResults.push([data.iter, data.distance_min]);
+            setResults(newResults);
+            // setResults([...results, [data.iter, data.distance_min]]);
+            console.log(data.iter, data.distance_min);
+        }
+        setFinished(newFinished);
+        // setMessage(data.message);
+    }, [data]);
+
     return (
         <>
         <ul>
