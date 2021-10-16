@@ -16,6 +16,7 @@ const App = () => {
     const [finished, setFinished] = useState(false);
     const [results, setResults] = useState([[iter, distanceMin]]);
     const [data, setData] = useState({});
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         if (!finished) {
@@ -36,6 +37,7 @@ const App = () => {
             setMemo(data.memo);
             let result = [data.iter, data.distance_min];
             setResults(data.iter ? [...results, result] : [result]);
+            setProgress(Math.floor(100 * (data.iter + 1) / fac / 100));
             console.log(...result);
         }
         setFinished(newFinished);
@@ -43,14 +45,14 @@ const App = () => {
 
     return (
         <>
-        <ul>
-            {results.map(result => (
-                <li key={result[0]}>
-                    {result.join(" ")}
-                </li>
-            ))}
-        </ul>
-        <div>{finished ? "Finished!" : ""}</div>
+            <div>Progress: {progress}%</div>
+            <ul>
+                {results.map(result => (
+                    <li key={result[0]}>
+                        {result.join(" ")}
+                    </li>
+                ))}
+            </ul>
         </>
     )
 }
