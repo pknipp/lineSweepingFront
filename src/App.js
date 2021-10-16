@@ -6,7 +6,7 @@ import lookup from './lookup';
 
 const App = () => {
     const [message, setMessage] = useState('initial message');
-    const [n, setN] = useState(3);
+    const [n, setN] = useState(10);
     const [iter, setIter] = useState(-1);
     const [distanceMin, setDistanceMin] = useState(10 ** 10);
     const [memo, setMemo] = useState([]);
@@ -15,68 +15,29 @@ const App = () => {
     const [finished, setFinished] = useState(false);
     const [results, setResults] = useState([[iter, distanceMin]]);
     const [data, setData] = useState({});
-    const [count, setCount] = useState(0);
-
-    // useEffect(() => {
-    //     let newXys = [...setTowns(n), [0, 0]];
-    //     setXys(newXys);
-    //     let newInterTownDistances = lookup(newXys);
-    //     console.log(newInterTownDistances);
-    //     setInterTownDistances(newInterTownDistances);
-    // }, []);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         // let backURL = "http://127.0.0.1:5000";
-    //         let backURL = "https://line-sweeping-back.herokuapp.com";
-    //         const response = await fetch(backURL);
-    //         let data = await response.json();
-    //         setMessage(data.message);
-    //     })()
-    // }, []);
 
     useEffect(() => {
         if (!finished) {
-            setCount(count + 1);
             (async () => {
                 let params = JSON.stringify({n, iter: iter + 1, distanceMin, memo, xys, interTownDistances});
-                // console.log("params = ", params)
                 let backURL = `http://127.0.0.1:5000/${params}`;
                 // let backURL = "https://line-sweeping-back.herokuapp.com";
-                if (!finished) {
-                    const response = await fetch(backURL);
-                    setData(await response.json());
-                };
-                // if (!data.finished) {
-                //     setIter(data.iter);
-                //     setDistanceMin(data.distance_min);
-                //     setMemo(data.memo);
-                //     let newResults = JSON.parse(JSON.stringify(results));
-                //     newResults.push([data.iter, data.distance_min]);
-                //     setResults(newResults);
-                //     // setResults([...results, [data.iter, data.distance_min]]);
-                //     console.log(data.iter, data.distance_min);
-                // }
-                // setFinished(data.finished);
-                // setMessage(data.message);
+                if (!finished) setData(await(await fetch(backURL)).json());
             })()
         }
     }, [iter]);
 
     useEffect(() => {
         let newFinished = data.finished;
-        if (!newFinished) {
+        if (!newFinished && data.iter !== undefined && data.distance_min && data.memo) {
             setIter(data.iter);
             setDistanceMin(data.distance_min);
             setMemo(data.memo);
-            let newResults = JSON.parse(JSON.stringify(results));
-            newResults.push([data.iter, data.distance_min]);
-            setResults(newResults);
-            // setResults([...results, [data.iter, data.distance_min]]);
-            console.log(data.iter, data.distance_min);
+            let result = [data.iter, data.distance_min];
+            setResults(data.iter ? [...results, result] : [result]);
+            console.log(...result);
         }
         setFinished(newFinished);
-        // setMessage(data.message);
     }, [data]);
 
     return (
@@ -88,7 +49,7 @@ const App = () => {
                 </li>
             ))}
         </ul>
-        <div>{finished ? `Finished with ${count} instances.` : ""}</div>
+        <div>{finished ? "Finished!" : ""}</div>
         </>
     )
 }
