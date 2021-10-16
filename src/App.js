@@ -20,8 +20,8 @@ const App = () => {
         if (!finished) {
             (async () => {
                 let params = JSON.stringify({n, iter: iter + 1, distanceMin, memo, xys, interTownDistances});
-                let backURL = `http://127.0.0.1:5000/${params}`;
-                // let backURL = "https://line-sweeping-back.herokuapp.com";
+                // let backURL = `http://127.0.0.1:5000/${params}`;
+                let backURL = `https://line-sweeping-back.herokuapp.com/${params}`;
                 if (!finished) setData(await(await fetch(backURL)).json());
             })()
         }
