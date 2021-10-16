@@ -6,7 +6,8 @@ import lookup from './lookup';
 
 const App = () => {
     const [message, setMessage] = useState('initial message');
-    const [n, setN] = useState(10);
+    const [n, setN] = useState(6);
+    const [fac, setFac] = useState(new Array(n).fill(0).reduce((fac, blah, i) => fac * (i + 1), 1));
     const [iter, setIter] = useState(-1);
     const [distanceMin, setDistanceMin] = useState(10 ** 10);
     const [memo, setMemo] = useState([]);
@@ -19,9 +20,9 @@ const App = () => {
     useEffect(() => {
         if (!finished) {
             (async () => {
-                let params = JSON.stringify({n, iter: iter + 1, distanceMin, memo, xys, interTownDistances});
-                // let backURL = `http://127.0.0.1:5000/${params}`;
-                let backURL = `https://line-sweeping-back.herokuapp.com/${params}`;
+                let params = JSON.stringify({n, fac, iter: iter + 1, distanceMin, memo, xys, interTownDistances});
+                let backURL = `http://127.0.0.1:5000/${params}`;
+                // let backURL = `https://line-sweeping-back.herokuapp.com/${params}`;
                 if (!finished) setData(await(await fetch(backURL)).json());
             })()
         }
