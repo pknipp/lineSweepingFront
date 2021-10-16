@@ -6,7 +6,7 @@ import lookup from './lookup';
 
 const App = () => {
     const [message, setMessage] = useState('initial message');
-    const [n, setN] = useState(6);
+    const [n, setN] = useState(10);
     const [fac, setFac] = useState(new Array(n).fill(0).reduce((fac, blah, i) => fac * (i + 1), 1));
     const [iter, setIter] = useState(-1);
     const [distanceMin, setDistanceMin] = useState(10 ** 10);
@@ -30,17 +30,18 @@ const App = () => {
     }, [iter]);
 
     useEffect(() => {
-        let newFinished = data.finished;
-        if (!newFinished && data.iter !== undefined && data.distance_min && data.memo) {
+        if (Object.keys(data).length > 1) {
             setIter(data.iter);
             setDistanceMin(data.distance_min);
             setMemo(data.memo);
             let result = [data.iter, data.distance_min];
             setResults(data.iter ? [...results, result] : [result]);
-            setProgress(Math.floor(100 * (data.iter + 1) / fac / 100));
-            console.log(...result);
-        }
-        setFinished(newFinished);
+            setProgress(Math.floor(100 * (data.iter + 1) / fac ));
+        };
+        if (data.finished) {
+            setFinished(true);
+            setProgress(100);
+        };
     }, [data]);
 
     return (
