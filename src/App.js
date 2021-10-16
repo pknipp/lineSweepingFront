@@ -6,13 +6,13 @@ import lookup from './lookup';
 
 const App = () => {
     const [message, setMessage] = useState('initial message');
-    const [n, setN] = useState(10);
-    const [fac, setFac] = useState(new Array(n).fill(0).reduce((fac, blah, i) => fac * (i + 1), 1));
+    const [n] = useState(10);
+    const [fac] = useState(new Array(n).fill(0).reduce((fac, ignoreMe, i) => fac * (i + 1), 1));
     const [iter, setIter] = useState(-1);
     const [distanceMin, setDistanceMin] = useState(10 ** 10);
     const [memo, setMemo] = useState([]);
-    const [xys, setXys] = useState([...setTowns(n), [0, 0]]);
-    const [interTownDistances, setInterTownDistances] = useState(lookup(xys));
+    const [xys] = useState([...setTowns(n), [0, 0]]);
+    const [interTownDistances] = useState(lookup(xys));
     const [finished, setFinished] = useState(false);
     const [results, setResults] = useState([[iter, distanceMin]]);
     const [data, setData] = useState({});
@@ -24,7 +24,7 @@ const App = () => {
                 let params = JSON.stringify({n, fac, iter: iter + 1, distanceMin, memo, xys, interTownDistances});
                 let backURL = `http://127.0.0.1:5000/${params}`;
                 // let backURL = `https://line-sweeping-back.herokuapp.com/${params}`;
-                if (!finished) setData(await(await fetch(backURL)).json());
+                setData(await(await fetch(backURL)).json());
             })()
         }
     }, [iter]);
@@ -37,6 +37,7 @@ const App = () => {
                 setDistanceMin(data.distance_min);
                 setMemo(data.memo);
                 let result = [data.iter, data.distance_min];
+                // console.log(result)
                 setResults(data.iter ? [...results, result] : [result]);
             }
         };
