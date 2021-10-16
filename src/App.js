@@ -32,11 +32,13 @@ const App = () => {
     useEffect(() => {
         if (Object.keys(data).length > 1) {
             setIter(data.iter);
-            setDistanceMin(data.distance_min);
-            setMemo(data.memo);
-            let result = [data.iter, data.distance_min];
-            setResults(data.iter ? [...results, result] : [result]);
-            setProgress(Math.floor(100 * (data.iter + 1) / fac ));
+            setProgress(Math.round(100 * (data.iter + 1) / fac ));
+            if (data.distance_min) {
+                setDistanceMin(data.distance_min);
+                setMemo(data.memo);
+                let result = [data.iter, data.distance_min];
+                setResults(data.iter ? [...results, result] : [result]);
+            }
         };
         if (data.finished) {
             setFinished(true);
@@ -46,7 +48,7 @@ const App = () => {
 
     return (
         <>
-            <div>Progress: {progress}%</div>
+            <div>Progress: {finished ? 'FINISHED!' : `${progress}%`}</div>
             <ul>
                 {results.map(result => (
                     <li key={result[0]}>
